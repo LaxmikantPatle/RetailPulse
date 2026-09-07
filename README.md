@@ -1,140 +1,220 @@
-# RetailPulse Analytics Pipeline
+# RetailPulse
 
-A runnable Airflow + PySpark + MinIO + Kafka medallion pipeline. Every layer
-script (`ingest.py` → `bronze.py` → `silver.py` → `gold.py` → `validation.py`
-→ `feature_engineering.py` → `tableau_export.py`) is implemented and wired
-into the DAG, using `local[*]` Spark by default so it runs with no cluster
-networking to configure. A standalone Spark cluster (`spark-master` /
-`spark-worker`, using the official `apache/spark` image) and Kafka (using
-the official `apache/kafka` KRaft image) are included in the compose file
-if you want to switch to them later — no Bitnami images are used, since
-Bitnami moved most versioned tags to an unsupported legacy repo in 2025.
-`minio/minio` and `minio/mc` are pinned to explicit release tags rather than
-`:latest`, since untagged pulls can behave inconsistently across Docker
-versions.
->Tableau Dashboard
->(https://public.tableau.com/app/profile/laxmikant.patle/viz/RetailPulse/RetailPulseDemandForecastDashboard?publish=yes)
-**This version of the pipeline is built around the [RetailRocket ecommerce
-dataset](https://www.kaggle.com/datasets/retailrocket/ecommerce-dataset)**:
-`events.csv` (view/addtocart/transaction clickstream), `item_properties_part1/2.csv`
-(item attributes over time, including category), and `category_tree.csv`
-(category hierarchy). The pipeline builds a daily transaction-count time
-series per category and overall, then fits a SARIMA model per series and
-forecasts forward — exported as a CSV for Tableau to plot actual vs. forecast.
+**A containerized, streaming-fed demand-forecasting pipeline for e-commerce.**
 
-## Prerequisites
-- Docker Desktop (running)
-- VS Code with the **Dev Containers** extension (optional but recommended) or just a terminal — either works
-- ~4 GB free RAM for the containers
+RetailPulse ingests raw shopping behavior — clicks, cart adds, purchases — from the
+[RetailRocket e-commerce dataset](https://www.kaggle.com/datasets/retailrocket/ecommerce-dataset)
+(2.7M+ events), streams it through Kafka, processes it on a distributed Spark cluster
+through a bronze/silver/gold medallion architecture, and forecasts 14-day transaction
+volume per product category using SARIMA — with every forecast backtested and scored, not
+just generated. Results are delivered to Tableau as a ready-to-visualize export.
+>Tableau DashBoard
+(https://public.tableau.com/app/profile/laxmikant.patle/viz/RetailPulse/RetailPulseDemandForecastDashboard?publish=yes)
 
-## Run it — steps in VS Code
+![Python](https://img.shields.io/badge/Python-3.8-blue)
+![Airflow](https://img.shields.io/badge/Airflow-2.8.1-017CEE?logo=apacheairflow&logoColor=white)
+![Spark](https://img.shields.io/badge/PySpark-3.5.1-E25A1C?logo=apachespark&logoColor=white)
+![Kafka](https://img.shields.io/badge/Kafka-3.7.0-231F20?logo=apachekafka&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+![MinIO](https://img.shields.io/badge/MinIO-S3A-C72E49?logo=minio&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-1. **Unzip and open the folder**
-   Unzip `retailpulse.zip`, then in VS Code: `File → Open Folder…` → select the `retailpulse` folder.
+---
 
-2. **Open a terminal in VS Code**
-   `Terminal → New Terminal` (this runs in the project root, `retailpulse/`).
+## Why this exists
 
-3. **Build the custom Airflow image** (adds Java + PySpark + deps on top of the official Airflow image)
-   ```bash
-   docker compose build
-   ```
+Retailers lose money in both directions when demand is misjudged — overstocking ties up
+cash, understocking loses sales to a competitor. Most dashboards only show *what already
+happened*. RetailPulse forecasts what's likely to happen next, broken down by category, so
+a planning team can act before a stockout or a warehouse overflow, not after.
 
-4. **Initialize the Airflow metadata DB and admin user** (one-time)
-   ```bash
-   docker compose up airflow-init
-   ```
-   Wait for it to exit with code 0.
+---
 
-5. **Start everything**
-   ```bash
-   docker compose up -d
-   ```
-   This brings up Postgres, Airflow webserver + scheduler, Spark master/worker, MinIO (+ bucket init), and Kafka.
+## Architecture
 
-6. **Check container health**
-   ```bash
-   docker compose ps
-   ```
-   All services should show `Up` (or `Exited (0)` for the one-off `minio-init`).
+```mermaid
+flowchart LR
+    subgraph src["📦 RetailRocket Dataset"]
+        events[events.csv]
+        props[item_properties.csv]
+        cats[category_tree.csv]
+    end
 
-7. **Place the RetailRocket dataset**
-   Download the 4 files from the [Kaggle dataset page](https://www.kaggle.com/datasets/retailrocket/ecommerce-dataset)
-   and put them in `data/raw/retailrocket/`:
-   ```
-   data/raw/retailrocket/events.csv
-   data/raw/retailrocket/item_properties_part1.csv
-   data/raw/retailrocket/item_properties_part2.csv
-   data/raw/retailrocket/category_tree.csv
-   ```
-   This folder is volume-mounted into the Airflow container automatically — no rebuild needed.
+    subgraph stream["⚡ Kafka Streaming Layer"]
+        direction LR
+        prod[Producer] --> topic[("retail.transactions")] --> cons[Consumer]
+    end
 
-8. **Open the Airflow UI**
-   Go to **http://localhost:8080** → login `admin` / `admin`.
+    subgraph medallion["🥉🥈🥇 Medallion Pipeline — Spark Cluster + MinIO"]
+        direction LR
+        ingest[Ingest] --> bronze[Bronze<br/>clean & dedupe]
+        bronze --> silver[Silver<br/>category enrichment]
+        silver --> gold[Gold<br/>daily aggregates]
+    end
 
-9. **Trigger the DAG**
-   Find `retailpulse_medallion_pipeline` → toggle it **on** (unpause) → **Trigger DAG**.
-   `run_date` doesn't need to match anything in the data — the RetailRocket files aren't date-partitioned,
-   `--date` is only used to tag output partitions. Leave the default params as-is.
+    subgraph ml["🔮 Forecasting"]
+        direction LR
+        fe[SARIMA Forecast<br/>+ MAPE/RMSE backtest] --> val[Validation]
+    end
 
-10. **Watch it run**
-    Click the graph view — tasks run in order: `ingest → bronze → silver → gold → feature_engineering → validation → tableau_export`.
-    `feature_engineering` is the SARIMA fitting step and will take the longest (one model fit per category + one for the overall total).
+    events --> prod
+    cons --> bronze
+    props --> ingest
+    cats --> ingest
+    gold --> fe
+    val --> export[Tableau Export] --> dash[📊 Tableau Dashboard]
 
-11. **Check the output**
-    - Parquet layers: MinIO console at **http://localhost:9001** (`minioadmin`/`minioadmin`) → buckets `bronze`, `silver`, `gold`
-    - Forecast CSV for Tableau: `data/exports/forecast_results_<date>.csv`
+    style stream fill:#0f6e5615,stroke:#0f6e56
+    style medallion fill:#0f6e5615,stroke:#0f6e56
+    style ml fill:#534ab715,stroke:#534ab7
+```
 
-## Other useful URLs
-| Service | URL |
+Every stage above is a single Airflow task (`run_script_task`), executed as an isolated
+subprocess in this exact order — `ingest → kafka_producer → kafka_consumer → bronze →
+silver → gold → feature_engineering → validation → tableau_export`. Every Spark-backed
+task submits to a real standalone Spark cluster (`spark-master`/`spark-worker`), not an
+in-process local session.
+
+---
+
+## Key features
+
+- **Event-driven ingestion** — real clickstream data replayed through Kafka into the
+  pipeline, not just a direct file read, demonstrating a streaming ingestion pattern ready
+  for a live production feed
+- **Distributed processing** — PySpark jobs submit to a real standalone Spark cluster
+- **Medallion architecture** — bronze (raw), silver (cleaned + category-enriched via a
+  bounded recursive category-tree rollup), gold (daily aggregated time series)
+- **S3-compatible object storage** — MinIO locally, swappable to real AWS S3 via config
+  only (no code changes), thanks to building against the S3A interface throughout
+- **SARIMA forecasting with weekly seasonality**, tuned per category and for the overall
+  total, forecasting 14 days ahead with 95% confidence intervals
+- **Backtested accuracy** — every forecast is validated by holding out the last 14 real
+  days, refitting, and scoring the prediction with **MAPE** and **RMSE** — not just
+  generating a number and hoping it's right
+- **Fully containerized** — one `docker compose up` brings up Airflow, Kafka, the Spark
+  cluster, MinIO, and Postgres together, with health-checked startup ordering
+- **BI-ready delivery** — forecast results and accuracy metrics both export as clean CSVs
+  for direct Tableau consumption
+
+---
+
+## Tech stack
+
+| Layer | Technology |
 |---|---|
-| Airflow UI | http://localhost:8080 |
-| Spark master UI | http://localhost:8081 |
-| MinIO console | http://localhost:9001 |
+| Orchestration | Apache Airflow 2.8.1 (subprocess execution model) |
+| Processing | PySpark 3.5.1, standalone cluster (`spark-master` / `spark-worker`) |
+| Streaming | Apache Kafka 3.7.0 (KRaft mode) |
+| Storage | MinIO (S3A) — Bronze / Silver / Gold Parquet |
+| Forecasting | `statsmodels` SARIMAX |
+| BI | Tableau (CSV export) |
+| Infra | Docker Compose |
 
-## Stopping / resetting
+---
+
+## Repository structure
+
+```
+retailpulse/
+├── docker-compose.yml        # Airflow, Kafka, Spark cluster, MinIO, Postgres
+├── Dockerfile.airflow        # Airflow image + Java + Python deps
+├── requirements.txt
+├── config/
+│   └── pipeline_config.yaml  # storage / spark / kafka / forecast settings
+├── dags/
+│   └── retailpulse_dag.py    # task sequencing via a single LAYERS list
+├── scripts/
+│   ├── utils.py               # shared config/Spark/path/logging helpers
+│   ├── ingest.py               # lands item_properties + category_tree
+│   ├── kafka_producer.py       # replays events.csv into Kafka
+│   ├── kafka_consumer.py       # consumes into bronze/events
+│   ├── bronze.py               # dedupe/clean
+│   ├── silver.py               # category enrichment + hierarchy rollup
+│   ├── gold.py                 # daily aggregation
+│   ├── feature_engineering.py  # SARIMA forecast + MAPE/RMSE backtest
+│   ├── validation.py           # data quality + accuracy logging
+│   └── tableau_export.py       # forecast + accuracy CSV export
+└── data/
+    ├── raw/retailrocket/       # place the 4 Kaggle CSVs here
+    └── exports/                # forecast_results_*.csv, forecast_accuracy_*.csv
+```
+
+---
+
+## Getting started
+
+**Prerequisites:** Docker Desktop, and the
+[RetailRocket dataset](https://www.kaggle.com/datasets/retailrocket/ecommerce-dataset)
+downloaded (`events.csv`, `item_properties_part1.csv`, `item_properties_part2.csv`,
+`category_tree.csv`).
+
 ```bash
-docker compose down          # stop containers, keep data
-docker compose down -v       # stop containers AND wipe volumes (fresh start)
+git clone https://github.com/LaxmikantPatle/RetailPulse.git
+cd RetailPulse
+
+# place the 4 dataset files here:
+# data/raw/retailrocket/
+
+docker compose build
+docker compose up airflow-init
+docker compose up -d
 ```
 
-## Project structure
-```
-docker-compose.yml           Airflow, Spark, MinIO, Kafka services
-Dockerfile.airflow           Airflow image + Java + pyspark/pyyaml/kafka-python/pandas/statsmodels/boto3
-requirements.txt             Python deps baked into the Airflow image
-dags/retailpulse_dag.py      DAG: loops over LAYERS, wires tasks in sequence via run_script_task
-scripts/utils.py             load_config, get_spark_session, get_path, get_config, get_logger, get_kafka_config
-scripts/_script_template.py  Copy this to add a new layer script
-scripts/ingest.py            RetailRocket CSVs -> bronze (events, item_properties, category_tree)
-scripts/bronze.py            dedupe/clean the three bronze tables
-scripts/silver.py            joins events -> item's current category -> rolled up to root category
-scripts/gold.py              daily_category_counts + daily_totals (the SARIMA time series base tables)
-scripts/feature_engineering.py  fits SARIMA per category + overall total, forecasts forward -> forecast_results
-scripts/validation.py        data quality checks on daily_totals and forecast_results
-scripts/tableau_export.py    forecast_results -> CSV export for Tableau (Hyper API stub included)
-scripts/kafka_producer.py    synthetic/replay event producer (standalone, not in the daily DAG)
-scripts/kafka_consumer.py    streams Kafka events into bronze (standalone, not in the daily DAG)
-config/pipeline_config.yaml  storage/spark/kafka/retailrocket/forecast config consumed by load_config()
-data/raw/retailrocket/       put the 4 Kaggle CSVs here (see step 7 above)
-data/exports/                tableau_export.py writes forecast_results_<date>.csv here
-```
+Then:
+1. Open **http://localhost:8080** (`admin` / `admin`) → unpause and trigger
+   `retailpulse_medallion_pipeline`
+2. Watch it run — Kafka UI at **http://localhost:8082**, Spark master UI at
+   **http://localhost:8081**
+3. Grab the output from `data/exports/forecast_results_<date>.csv` and
+   `data/exports/forecast_accuracy_<date>.csv`
 
-## Adding a new script
-1. `cp scripts/_script_template.py scripts/my_layer.py`
-2. Set `SCRIPT_NAME = "my_layer"`, fill in `run(spark, args, logger)`
-3. Add `"my_layer"` to `LAYERS` in `dags/retailpulse_dag.py` at the position you want it wired in
+---
 
-Every script automatically gets the standard contract: `--date --config --full-refresh`,
-config-first initialization, `try/finally` with `spark.stop()`, and `sys.exit(1)` on failure.
+## Methodology notes
 
-## Notes / known limitations
-- `spark.master` defaults to `local[*]` (runs inside the Airflow container) for reliability. To offload to the
-  standalone cluster, set `spark.master: "spark://spark-master:7077"` in `config/pipeline_config.yaml` — note this
-  requires the cluster's executors to reach back to the driver over the Docker network, which can need extra
-  `spark.driver.host` tuning depending on your Docker network setup.
-- `tableau_export.py` ships a CSV export so the pipeline runs with zero extra setup. Swap in `export_hyper()` once
-  `tableauhyperapi` is added to `requirements.txt` and rebuilt.
-- `kafka_producer.py` / `kafka_consumer.py` are standalone utilities (not part of the daily `LAYERS` DAG) — run them
-  manually via `docker compose exec airflow-scheduler python scripts/kafka_producer.py --date 2024-01-01 --config config/pipeline_config.yaml`
-  once you want to exercise the streaming path.
+- **Category resolution:** an item's category isn't on the event itself — it's resolved
+  from `item_properties` (taking each item's most recent `categoryid` snapshot) and rolled
+  up to its top-level ancestor via a bounded iterative self-join against `category_tree`
+  (Spark doesn't support recursive queries natively).
+- **Forecast target:** daily **transaction count** per category, not revenue — the source
+  dataset has no price data.
+- **Model:** `SARIMAX(order=(1,1,1), seasonal_order=(1,1,1,7))` by default, tunable in
+  `config/pipeline_config.yaml`, forecasting the overall total plus the top 10 categories
+  by transaction volume.
+- **Accuracy validation:** a 14-day holdout backtest per entity, scored with MAPE (mean
+  absolute percentage error) and RMSE (root mean squared error).
+
+---
+
+## Known limitations
+
+Being upfront about these rather than letting someone else find them first:
+
+- SARIMA forecasts pattern, not cause — it can't account for a planned promotion, a
+  competitor's sale, or an event it hasn't seen before. Treat it as a baseline signal, not
+  a final answer.
+- No automated tests yet — the category rollup logic (`silver.py`) is the highest-value
+  target for unit tests, being the most complex transformation in the pipeline.
+- The Kafka setup runs a single broker with replication factor 1 — fine for local
+  development, not fault-tolerant, and not representative of a production Kafka cluster.
+- Default write mode is `append`; re-running the same date without `--full-refresh` will
+  duplicate rows in bronze/silver rather than being a no-op.
+- MAPE is undefined (shown as `n/a`) for any entity whose backtest window is entirely
+  zero-transaction days — mathematically correct, not a bug.
+
+---
+
+## Roadmap
+
+- [ ] Automated tests for the category hierarchy rollup
+- [ ] Stationarity testing (ADF) and AIC/BIC-driven order selection instead of fixed SARIMA parameters
+- [ ] SARIMAX with promotional/holiday calendar as exogenous regressors
+- [ ] Idempotent pipeline runs (safe re-triggering without duplication)
+- [ ] Native Tableau Hyper export (stub already in `tableau_export.py`)
+
+---
+
+## Author
+
+Built by [Laxmikant Patle](https://github.com/LaxmikantPatle).
