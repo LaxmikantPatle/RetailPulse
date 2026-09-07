@@ -208,7 +208,6 @@ Being upfront about these rather than letting someone else find them first:
 ## Roadmap
 
 - [ ] Automated tests for the category hierarchy rollup
-- [ ] Stationarity testing (ADF) and AIC/BIC-driven order selection instead of fixed SARIMA parameters
 - [ ] SARIMAX with promotional/holiday calendar as exogenous regressors
 - [ ] Idempotent pipeline runs (safe re-triggering without duplication)
 - [ ] Native Tableau Hyper export (stub already in `tableau_export.py`)
