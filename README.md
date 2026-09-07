@@ -12,7 +12,8 @@ Bitnami moved most versioned tags to an unsupported legacy repo in 2025.
 `minio/minio` and `minio/mc` are pinned to explicit release tags rather than
 `:latest`, since untagged pulls can behave inconsistently across Docker
 versions.
-
+>Tableau Dashboard
+>(https://public.tableau.com/app/profile/laxmikant.patle/viz/RetailPulse/RetailPulseDemandForecastDashboard?publish=yes)
 **This version of the pipeline is built around the [RetailRocket ecommerce
 dataset](https://www.kaggle.com/datasets/retailrocket/ecommerce-dataset)**:
 `events.csv` (view/addtocart/transaction clickstream), `item_properties_part1/2.csv`
