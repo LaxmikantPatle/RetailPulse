@@ -1,0 +1,49 @@
+[2026-08-26T12:43:19.975+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: retailpulse_medallion_pipeline.tableau_export scheduled__2026-08-25T00:00:00+00:00 [queued]>
+[2026-08-26T12:43:19.988+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: retailpulse_medallion_pipeline.tableau_export scheduled__2026-08-25T00:00:00+00:00 [queued]>
+[2026-08-26T12:43:19.989+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2026-08-26T12:43:20.041+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): tableau_export> on 2026-08-25 00:00:00+00:00
+[2026-08-26T12:43:20.049+0000] {standard_task_runner.py:60} INFO - Started process 2795 to run task
+[2026-08-26T12:43:20.056+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'retailpulse_medallion_pipeline', 'tableau_export', 'scheduled__2026-08-25T00:00:00+00:00', '--job-id', '10', '--raw', '--subdir', 'DAGS_FOLDER/retailpulse_dag.py', '--cfg-path', '/tmp/tmplqvfq6h9']
+[2026-08-26T12:43:20.059+0000] {standard_task_runner.py:88} INFO - Job 10: Subtask tableau_export
+[2026-08-26T12:43:20.175+0000] {task_command.py:423} INFO - Running <TaskInstance: retailpulse_medallion_pipeline.tableau_export scheduled__2026-08-25T00:00:00+00:00 [running]> on host 1decbd92f565
+[2026-08-26T12:43:20.329+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='retailpulse' AIRFLOW_CTX_DAG_ID='retailpulse_medallion_pipeline' AIRFLOW_CTX_TASK_ID='tableau_export' AIRFLOW_CTX_EXECUTION_DATE='2026-08-25T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-08-25T00:00:00+00:00'
+[2026-08-26T12:43:23.050+0000] {logging_mixin.py:188} INFO - :: loading settings :: url = jar:file:/home/***/.local/lib/python3.8/site-packages/pyspark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+[2026-08-26T12:43:23.177+0000] {logging_mixin.py:188} INFO - Ivy Default Cache set to: /home/***/.ivy2/cache
+[2026-08-26T12:43:23.183+0000] {logging_mixin.py:188} INFO - The jars for the packages stored in: /home/***/.ivy2/jars
+[2026-08-26T12:43:23.190+0000] {logging_mixin.py:188} INFO - org.apache.hadoop#hadoop-aws added as a dependency
+[2026-08-26T12:43:23.191+0000] {logging_mixin.py:188} INFO - com.amazonaws#aws-java-sdk-bundle added as a dependency
+[2026-08-26T12:43:23.194+0000] {logging_mixin.py:188} INFO - :: resolving dependencies :: org.apache.spark#spark-submit-parent-6ea7300c-444d-4539-9e8f-b212a9f11ec9;1.0
+[2026-08-26T12:43:23.196+0000] {logging_mixin.py:188} INFO - 	confs: [default]
+[2026-08-26T12:43:23.446+0000] {logging_mixin.py:188} INFO - 	found org.apache.hadoop#hadoop-aws;3.3.4 in central
+[2026-08-26T12:43:23.499+0000] {logging_mixin.py:188} INFO - 	found com.amazonaws#aws-java-sdk-bundle;1.12.262 in central
+[2026-08-26T12:43:23.539+0000] {logging_mixin.py:188} INFO - 	found org.wildfly.openssl#wildfly-openssl;1.0.7.Final in central
+[2026-08-26T12:43:23.571+0000] {logging_mixin.py:188} INFO - :: resolution report :: resolve 365ms :: artifacts dl 13ms
+[2026-08-26T12:43:23.573+0000] {logging_mixin.py:188} INFO - 	:: modules in use:
+[2026-08-26T12:43:23.575+0000] {logging_mixin.py:188} INFO - 	com.amazonaws#aws-java-sdk-bundle;1.12.262 from central in [default]
+[2026-08-26T12:43:23.579+0000] {logging_mixin.py:188} INFO - 	org.apache.hadoop#hadoop-aws;3.3.4 from central in [default]
+[2026-08-26T12:43:23.580+0000] {logging_mixin.py:188} INFO - 	org.wildfly.openssl#wildfly-openssl;1.0.7.Final from central in [default]
+[2026-08-26T12:43:23.582+0000] {logging_mixin.py:188} INFO - 	---------------------------------------------------------------------
+[2026-08-26T12:43:23.584+0000] {logging_mixin.py:188} INFO - 	|                  |            modules            ||   artifacts   |
+[2026-08-26T12:43:23.585+0000] {logging_mixin.py:188} INFO - 	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+[2026-08-26T12:43:23.587+0000] {logging_mixin.py:188} INFO - 	---------------------------------------------------------------------
+[2026-08-26T12:43:23.590+0000] {logging_mixin.py:188} INFO - 	|      default     |   3   |   0   |   0   |   0   ||   3   |   0   |
+[2026-08-26T12:43:23.592+0000] {logging_mixin.py:188} INFO - 	---------------------------------------------------------------------
+[2026-08-26T12:43:23.593+0000] {logging_mixin.py:188} INFO - :: retrieving :: org.apache.spark#spark-submit-parent-6ea7300c-444d-4539-9e8f-b212a9f11ec9
+[2026-08-26T12:43:23.595+0000] {logging_mixin.py:188} INFO - 	confs: [default]
+[2026-08-26T12:43:23.597+0000] {logging_mixin.py:188} INFO - 	0 artifacts copied, 3 already retrieved (0kB/11ms)
+[2026-08-26T12:43:23.881+0000] {logging_mixin.py:188} INFO - 26/08/26 12:43:23 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+[2026-08-26T12:43:24.166+0000] {logging_mixin.py:188} INFO - Setting default log level to "WARN".
+[2026-08-26T12:43:24.169+0000] {logging_mixin.py:188} INFO - To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+[2026-08-26T12:43:27.121+0000] {logging_mixin.py:188} INFO - 2026-08-26 12:43:27,121 | INFO | tableau_export | Reading forecast results from s3a://gold/forecast_results/dt=2026-08-25
+[2026-08-26T12:43:29.083+0000] {logging_mixin.py:188} INFO - 26/08/26 12:43:29 WARN MetricsConfig: Cannot locate configuration: tried hadoop-metrics2-s3a-file-system.properties,hadoop-metrics2.properties
+[2026-08-26T12:43:44.142+0000] {logging_mixin.py:188} INFO - [Stage 0:>                                                          (0 + 0) / 1]
+[2026-08-26T12:43:47.363+0000] {logging_mixin.py:188} INFO - [Stage 0:>                                                          (0 + 1) / 1]
+[2026-08-26T12:43:52.517+0000] {logging_mixin.py:188} INFO - [Stage 1:>                                                          (0 + 2) / 2]
+[2026-08-26T12:43:54.352+0000] {logging_mixin.py:188} INFO - [Stage 2:>                                                          (0 + 2) / 2]
+[2026-08-26T12:43:54.356+0000] {logging_mixin.py:188} INFO - 2026-08-26 12:43:54,356 | INFO | tableau_export | Exported 980 rows to /opt/***/data/exports/forecast_results_2026-08-25.csv
+[2026-08-26T12:43:56.068+0000] {logging_mixin.py:188} INFO - 2026-08-26 12:43:56,065 | INFO | tableau_export | Exported 10 rows to /opt/***/data/exports/forecast_accuracy_2026-08-25.csv
+[2026-08-26T12:43:56.070+0000] {logging_mixin.py:188} INFO - 2026-08-26 12:43:56,065 | INFO | tableau_export | tableau_export completed successfully for date=2026-08-25
+[2026-08-26T12:43:56.887+0000] {python.py:201} INFO - Done. Returned value was: None
+[2026-08-26T12:43:56.910+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=retailpulse_medallion_pipeline, task_id=tableau_export, execution_date=20260825T000000, start_date=20260826T124319, end_date=20260826T124356
+[2026-08-26T12:43:56.989+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2026-08-26T12:43:57.015+0000] {taskinstance.py:3280} INFO - 0 downstream tasks scheduled from follow-on schedule check

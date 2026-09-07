@@ -1,0 +1,62 @@
+[2026-08-27T02:36:10.937+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: retailpulse_medallion_pipeline.ingest scheduled__2026-08-26T00:00:00+00:00 [queued]>
+[2026-08-27T02:36:10.985+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: retailpulse_medallion_pipeline.ingest scheduled__2026-08-26T00:00:00+00:00 [queued]>
+[2026-08-27T02:36:10.989+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2026-08-27T02:36:11.922+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): ingest> on 2026-08-26 00:00:00+00:00
+[2026-08-27T02:36:11.976+0000] {standard_task_runner.py:60} INFO - Started process 3534 to run task
+[2026-08-27T02:36:11.987+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'retailpulse_medallion_pipeline', 'ingest', 'scheduled__2026-08-26T00:00:00+00:00', '--job-id', '11', '--raw', '--subdir', 'DAGS_FOLDER/retailpulse_dag.py', '--cfg-path', '/tmp/tmpj5brbbf0']
+[2026-08-27T02:36:12.006+0000] {standard_task_runner.py:88} INFO - Job 11: Subtask ingest
+[2026-08-27T02:36:12.344+0000] {task_command.py:423} INFO - Running <TaskInstance: retailpulse_medallion_pipeline.ingest scheduled__2026-08-26T00:00:00+00:00 [running]> on host 1decbd92f565
+[2026-08-27T02:36:12.855+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='retailpulse' AIRFLOW_CTX_DAG_ID='retailpulse_medallion_pipeline' AIRFLOW_CTX_TASK_ID='ingest' AIRFLOW_CTX_EXECUTION_DATE='2026-08-26T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-08-26T00:00:00+00:00'
+[2026-08-27T02:36:21.498+0000] {logging_mixin.py:188} INFO - :: loading settings :: url = jar:file:/home/***/.local/lib/python3.8/site-packages/pyspark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+[2026-08-27T02:36:21.629+0000] {logging_mixin.py:188} INFO - Ivy Default Cache set to: /home/***/.ivy2/cache
+[2026-08-27T02:36:21.633+0000] {logging_mixin.py:188} INFO - The jars for the packages stored in: /home/***/.ivy2/jars
+[2026-08-27T02:36:21.639+0000] {logging_mixin.py:188} INFO - org.apache.hadoop#hadoop-aws added as a dependency
+[2026-08-27T02:36:21.641+0000] {logging_mixin.py:188} INFO - com.amazonaws#aws-java-sdk-bundle added as a dependency
+[2026-08-27T02:36:21.645+0000] {logging_mixin.py:188} INFO - :: resolving dependencies :: org.apache.spark#spark-submit-parent-f3e12095-ae91-4f54-924d-7ac0d1a86567;1.0
+[2026-08-27T02:36:21.646+0000] {logging_mixin.py:188} INFO - 	confs: [default]
+[2026-08-27T02:36:22.264+0000] {logging_mixin.py:188} INFO - 	found org.apache.hadoop#hadoop-aws;3.3.4 in central
+[2026-08-27T02:36:22.374+0000] {logging_mixin.py:188} INFO - 	found com.amazonaws#aws-java-sdk-bundle;1.12.262 in central
+[2026-08-27T02:36:22.493+0000] {logging_mixin.py:188} INFO - 	found org.wildfly.openssl#wildfly-openssl;1.0.7.Final in central
+[2026-08-27T02:36:22.599+0000] {logging_mixin.py:188} INFO - :: resolution report :: resolve 919ms :: artifacts dl 37ms
+[2026-08-27T02:36:22.608+0000] {logging_mixin.py:188} INFO - 	:: modules in use:
+[2026-08-27T02:36:22.617+0000] {logging_mixin.py:188} INFO - 	com.amazonaws#aws-java-sdk-bundle;1.12.262 from central in [default]
+[2026-08-27T02:36:22.619+0000] {logging_mixin.py:188} INFO - 	org.apache.hadoop#hadoop-aws;3.3.4 from central in [default]
+[2026-08-27T02:36:22.620+0000] {logging_mixin.py:188} INFO - 	org.wildfly.openssl#wildfly-openssl;1.0.7.Final from central in [default]
+[2026-08-27T02:36:22.632+0000] {logging_mixin.py:188} INFO - 	---------------------------------------------------------------------
+[2026-08-27T02:36:22.634+0000] {logging_mixin.py:188} INFO - 	|                  |            modules            ||   artifacts   |
+[2026-08-27T02:36:22.636+0000] {logging_mixin.py:188} INFO - 	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+[2026-08-27T02:36:22.637+0000] {logging_mixin.py:188} INFO - 	---------------------------------------------------------------------
+[2026-08-27T02:36:22.652+0000] {logging_mixin.py:188} INFO - 	|      default     |   3   |   0   |   0   |   0   ||   3   |   0   |
+[2026-08-27T02:36:22.654+0000] {logging_mixin.py:188} INFO - 	---------------------------------------------------------------------
+[2026-08-27T02:36:22.665+0000] {logging_mixin.py:188} INFO - :: retrieving :: org.apache.spark#spark-submit-parent-f3e12095-ae91-4f54-924d-7ac0d1a86567
+[2026-08-27T02:36:22.667+0000] {logging_mixin.py:188} INFO - 	confs: [default]
+[2026-08-27T02:36:22.669+0000] {logging_mixin.py:188} INFO - 	0 artifacts copied, 3 already retrieved (0kB/30ms)
+[2026-08-27T02:36:23.792+0000] {logging_mixin.py:188} INFO - 26/08/27 02:36:23 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+[2026-08-27T02:36:24.237+0000] {logging_mixin.py:188} INFO - Setting default log level to "WARN".
+[2026-08-27T02:36:24.246+0000] {logging_mixin.py:188} INFO - To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+[2026-08-27T02:36:28.361+0000] {logging_mixin.py:188} INFO - 2026-08-27 02:36:28,360 | INFO | ingest | Reading item properties: ['/opt/***/data/raw/retailrocket/item_properties_part1.csv', '/opt/***/data/raw/retailrocket/item_properties_part2.csv']
+[2026-08-27T02:36:43.421+0000] {logging_mixin.py:188} INFO - [Stage 0:>                                                          (0 + 0) / 1]
+[2026-08-27T02:36:46.136+0000] {logging_mixin.py:188} INFO - [Stage 0:>                                                          (0 + 1) / 1]
+[2026-08-27T02:37:00.645+0000] {logging_mixin.py:188} INFO - [Stage 1:>                                                          (0 + 2) / 7]
+[2026-08-27T02:37:10.858+0000] {logging_mixin.py:188} INFO - [Stage 1:================>                                          (2 + 2) / 7]
+[2026-08-27T02:37:19.864+0000] {logging_mixin.py:188} INFO - [Stage 1:=================================>                         (4 + 2) / 7]
+[2026-08-27T02:37:20.064+0000] {logging_mixin.py:188} INFO - [Stage 1:==========================================>                (5 + 2) / 7]
+[2026-08-27T02:37:24.989+0000] {logging_mixin.py:188} INFO - [Stage 1:==================================================>        (6 + 1) / 7]
+[2026-08-27T02:37:28.672+0000] {logging_mixin.py:188} INFO - [Stage 2:>                                                          (0 + 2) / 7]
+[2026-08-27T02:37:31.473+0000] {logging_mixin.py:188} INFO - [Stage 2:================>                                          (2 + 2) / 7]
+[2026-08-27T02:37:34.275+0000] {logging_mixin.py:188} INFO - [Stage 2:=================================>                         (4 + 2) / 7]
+[2026-08-27T02:37:36.429+0000] {logging_mixin.py:188} INFO - [Stage 2:==================================================>        (6 + 1) / 7]
+[2026-08-27T02:37:36.434+0000] {logging_mixin.py:188} INFO - 2026-08-27 02:37:36,434 | INFO | ingest | Writing 20275902 item property rows to s3a://bronze/item_properties/dt=2026-08-26 (mode=append)
+[2026-08-27T02:37:36.618+0000] {logging_mixin.py:188} INFO - 26/08/27 02:37:36 WARN MetricsConfig: Cannot locate configuration: tried hadoop-metrics2-s3a-file-system.properties,hadoop-metrics2.properties
+[2026-08-27T02:37:59.911+0000] {logging_mixin.py:188} INFO - [Stage 5:>                                                          (0 + 2) / 7]
+[2026-08-27T02:38:12.919+0000] {logging_mixin.py:188} INFO - [Stage 5:================>                                          (2 + 2) / 7]
+[2026-08-27T02:38:27.932+0000] {logging_mixin.py:188} INFO - [Stage 5:=================================>                         (4 + 2) / 7]
+[2026-08-27T02:38:37.464+0000] {logging_mixin.py:188} INFO - [Stage 5:==================================================>        (6 + 1) / 7]
+[2026-08-27T02:38:41.143+0000] {logging_mixin.py:188} INFO - 2026-08-27 02:38:41,142 | INFO | ingest | Reading /opt/***/data/raw/retailrocket/category_tree.csv
+[2026-08-27T02:38:42.324+0000] {logging_mixin.py:188} INFO - 2026-08-27 02:38:42,323 | INFO | ingest | Writing 1669 category rows to s3a://bronze/category_tree/dt=2026-08-26 (mode=append)
+[2026-08-27T02:38:43.558+0000] {logging_mixin.py:188} INFO - [Stage 11:>                                                         (0 + 1) / 1]
+[2026-08-27T02:38:45.126+0000] {logging_mixin.py:188} INFO - 2026-08-27 02:38:45,124 | INFO | ingest | ingest completed successfully for date=2026-08-26
+[2026-08-27T02:38:46.236+0000] {python.py:201} INFO - Done. Returned value was: None
+[2026-08-27T02:38:46.256+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=retailpulse_medallion_pipeline, task_id=ingest, execution_date=20260826T000000, start_date=20260827T023610, end_date=20260827T023846
+[2026-08-27T02:38:46.366+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2026-08-27T02:38:46.514+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

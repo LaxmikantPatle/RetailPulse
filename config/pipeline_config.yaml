@@ -1,0 +1,47 @@
+storage:
+  endpoint: "http://minio:9000"
+  access_key: "minioadmin"
+  secret_key: "minioadmin"
+  buckets:
+    bronze: "bronze"
+    silver: "silver"
+    gold: "gold"
+    checkpoints: "checkpoints"
+
+spark:
+  # Switched to the standalone cluster (spark-master/spark-worker in
+  # docker-compose.yml). Was "local[*]" for single-container execution.
+  master: "spark://spark-master:7077"
+  executor_memory: "2g"
+  driver_memory: "1g"
+  shuffle_partitions: 8
+
+kafka:
+  bootstrap_servers: "kafka:9092"
+  topics:
+    transactions: "retail.transactions"
+    events: "retail.events"
+
+paths:
+  bronze_root: "s3a://bronze"
+  silver_root: "s3a://silver"
+  gold_root: "s3a://gold"
+
+retailrocket:
+  # Place the 4 Kaggle files here: events.csv, item_properties_part1.csv,
+  # item_properties_part2.csv, category_tree.csv
+  raw_dir: "/opt/airflow/data/raw/retailrocket"
+
+forecast:
+  # How many days ahead to forecast
+  horizon_days: 14
+  # SARIMA order (p,d,q) and seasonal order (P,D,Q,s) -- s=7 for weekly seasonality
+  order: [1, 1, 1]
+  seasonal_order: [1, 1, 1, 7]
+  # Only forecast categories with at least this many transaction-days of history
+  min_history_days: 30
+  # Forecast the overall total plus the top N categories by transaction volume
+  top_n_categories: 10
+
+logging:
+  level: "INFO"

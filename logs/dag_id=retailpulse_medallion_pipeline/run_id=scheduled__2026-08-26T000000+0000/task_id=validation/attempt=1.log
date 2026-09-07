@@ -1,0 +1,57 @@
+[2026-08-27T02:59:28.294+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: retailpulse_medallion_pipeline.validation scheduled__2026-08-26T00:00:00+00:00 [queued]>
+[2026-08-27T02:59:28.330+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: retailpulse_medallion_pipeline.validation scheduled__2026-08-26T00:00:00+00:00 [queued]>
+[2026-08-27T02:59:28.333+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 2
+[2026-08-27T02:59:28.399+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): validation> on 2026-08-26 00:00:00+00:00
+[2026-08-27T02:59:28.413+0000] {standard_task_runner.py:60} INFO - Started process 5793 to run task
+[2026-08-27T02:59:28.425+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'retailpulse_medallion_pipeline', 'validation', 'scheduled__2026-08-26T00:00:00+00:00', '--job-id', '18', '--raw', '--subdir', 'DAGS_FOLDER/retailpulse_dag.py', '--cfg-path', '/tmp/tmpj3n40xw6']
+[2026-08-27T02:59:28.436+0000] {standard_task_runner.py:88} INFO - Job 18: Subtask validation
+[2026-08-27T02:59:28.730+0000] {task_command.py:423} INFO - Running <TaskInstance: retailpulse_medallion_pipeline.validation scheduled__2026-08-26T00:00:00+00:00 [running]> on host 1decbd92f565
+[2026-08-27T02:59:29.244+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='retailpulse' AIRFLOW_CTX_DAG_ID='retailpulse_medallion_pipeline' AIRFLOW_CTX_TASK_ID='validation' AIRFLOW_CTX_EXECUTION_DATE='2026-08-26T00:00:00+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='scheduled__2026-08-26T00:00:00+00:00'
+[2026-08-27T02:59:32.270+0000] {logging_mixin.py:188} INFO - :: loading settings :: url = jar:file:/home/***/.local/lib/python3.8/site-packages/pyspark/jars/ivy-2.5.1.jar!/org/apache/ivy/core/settings/ivysettings.xml
+[2026-08-27T02:59:32.383+0000] {logging_mixin.py:188} INFO - Ivy Default Cache set to: /home/***/.ivy2/cache
+[2026-08-27T02:59:32.386+0000] {logging_mixin.py:188} INFO - The jars for the packages stored in: /home/***/.ivy2/jars
+[2026-08-27T02:59:32.393+0000] {logging_mixin.py:188} INFO - org.apache.hadoop#hadoop-aws added as a dependency
+[2026-08-27T02:59:32.396+0000] {logging_mixin.py:188} INFO - com.amazonaws#aws-java-sdk-bundle added as a dependency
+[2026-08-27T02:59:32.398+0000] {logging_mixin.py:188} INFO - :: resolving dependencies :: org.apache.spark#spark-submit-parent-d9a3b47b-47c2-408c-b4be-463f62fdcced;1.0
+[2026-08-27T02:59:32.400+0000] {logging_mixin.py:188} INFO - 	confs: [default]
+[2026-08-27T02:59:32.737+0000] {logging_mixin.py:188} INFO - 	found org.apache.hadoop#hadoop-aws;3.3.4 in central
+[2026-08-27T02:59:32.906+0000] {logging_mixin.py:188} INFO - 	found com.amazonaws#aws-java-sdk-bundle;1.12.262 in central
+[2026-08-27T02:59:33.110+0000] {logging_mixin.py:188} INFO - 	found org.wildfly.openssl#wildfly-openssl;1.0.7.Final in central
+[2026-08-27T02:59:33.185+0000] {logging_mixin.py:188} INFO - :: resolution report :: resolve 767ms :: artifacts dl 20ms
+[2026-08-27T02:59:33.187+0000] {logging_mixin.py:188} INFO - 	:: modules in use:
+[2026-08-27T02:59:33.189+0000] {logging_mixin.py:188} INFO - 	com.amazonaws#aws-java-sdk-bundle;1.12.262 from central in [default]
+[2026-08-27T02:59:33.193+0000] {logging_mixin.py:188} INFO - 	org.apache.hadoop#hadoop-aws;3.3.4 from central in [default]
+[2026-08-27T02:59:33.194+0000] {logging_mixin.py:188} INFO - 	org.wildfly.openssl#wildfly-openssl;1.0.7.Final from central in [default]
+[2026-08-27T02:59:33.196+0000] {logging_mixin.py:188} INFO - 	---------------------------------------------------------------------
+[2026-08-27T02:59:33.203+0000] {logging_mixin.py:188} INFO - 	|                  |            modules            ||   artifacts   |
+[2026-08-27T02:59:33.205+0000] {logging_mixin.py:188} INFO - 	|       conf       | number| search|dwnlded|evicted|| number|dwnlded|
+[2026-08-27T02:59:33.207+0000] {logging_mixin.py:188} INFO - 	---------------------------------------------------------------------
+[2026-08-27T02:59:33.211+0000] {logging_mixin.py:188} INFO - 	|      default     |   3   |   0   |   0   |   0   ||   3   |   0   |
+[2026-08-27T02:59:33.213+0000] {logging_mixin.py:188} INFO - 	---------------------------------------------------------------------
+[2026-08-27T02:59:33.215+0000] {logging_mixin.py:188} INFO - :: retrieving :: org.apache.spark#spark-submit-parent-d9a3b47b-47c2-408c-b4be-463f62fdcced
+[2026-08-27T02:59:33.216+0000] {logging_mixin.py:188} INFO - 	confs: [default]
+[2026-08-27T02:59:33.218+0000] {logging_mixin.py:188} INFO - 	0 artifacts copied, 3 already retrieved (0kB/13ms)
+[2026-08-27T02:59:33.500+0000] {logging_mixin.py:188} INFO - 26/08/27 02:59:33 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+[2026-08-27T02:59:33.850+0000] {logging_mixin.py:188} INFO - Setting default log level to "WARN".
+[2026-08-27T02:59:33.851+0000] {logging_mixin.py:188} INFO - To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+[2026-08-27T02:59:43.692+0000] {logging_mixin.py:188} INFO - 26/08/27 02:59:43 WARN MetricsConfig: Cannot locate configuration: tried hadoop-metrics2-s3a-file-system.properties,hadoop-metrics2.properties
+[2026-08-27T02:59:52.644+0000] {logging_mixin.py:188} INFO - [Stage 0:>                                                          (0 + 0) / 1]
+[2026-08-27T02:59:56.881+0000] {logging_mixin.py:188} INFO - [Stage 0:>                                                          (0 + 1) / 1]
+[2026-08-27T03:00:01.063+0000] {logging_mixin.py:188} INFO - [Stage 1:>                                                          (0 + 1) / 1]
+[2026-08-27T03:00:05.871+0000] {logging_mixin.py:188} INFO - [Stage 14:=============================>                            (1 + 1) / 2]
+[2026-08-27T03:00:06.713+0000] {logging_mixin.py:188} INFO - 2026-08-27 03:00:06,713 | INFO | validation | Backtest accuracy — CATEGORY_1224: RMSE=7.72, MAPE=196.5%
+[2026-08-27T03:00:06.715+0000] {logging_mixin.py:188} INFO - 2026-08-27 03:00:06,714 | INFO | validation | Backtest accuracy — CATEGORY_653: RMSE=5.94, MAPE=34.5%
+[2026-08-27T03:00:06.717+0000] {logging_mixin.py:188} INFO - 2026-08-27 03:00:06,715 | INFO | validation | Backtest accuracy — CATEGORY_395: RMSE=7.29, MAPE=47.4%
+[2026-08-27T03:00:06.719+0000] {logging_mixin.py:188} INFO - 2026-08-27 03:00:06,715 | INFO | validation | Backtest accuracy — CATEGORY_679: RMSE=2.47, MAPE=100.0%
+[2026-08-27T03:00:06.720+0000] {logging_mixin.py:188} INFO - 2026-08-27 03:00:06,716 | INFO | validation | Backtest accuracy — CATEGORY_1490: RMSE=1.72, MAPE=36.3%
+[2026-08-27T03:00:06.722+0000] {logging_mixin.py:188} INFO - 2026-08-27 03:00:06,716 | INFO | validation | Backtest accuracy — TOTAL: RMSE=55.27, MAPE=36.8%
+[2026-08-27T03:00:06.723+0000] {logging_mixin.py:188} INFO - 2026-08-27 03:00:06,718 | INFO | validation | Backtest accuracy — CATEGORY_140: RMSE=33.17, MAPE=60.1%
+[2026-08-27T03:00:06.725+0000] {logging_mixin.py:188} INFO - 2026-08-27 03:00:06,718 | INFO | validation | Backtest accuracy — CATEGORY_1600: RMSE=5.68, MAPE=53.8%
+[2026-08-27T03:00:06.726+0000] {logging_mixin.py:188} INFO - 2026-08-27 03:00:06,718 | INFO | validation | Backtest accuracy — CATEGORY_1532: RMSE=12.13, MAPE=99.2%
+[2026-08-27T03:00:06.727+0000] {logging_mixin.py:188} INFO - 2026-08-27 03:00:06,718 | INFO | validation | Backtest accuracy — CATEGORY_1482: RMSE=9.49, MAPE=106.6%
+[2026-08-27T03:00:06.729+0000] {logging_mixin.py:188} INFO - 2026-08-27 03:00:06,718 | INFO | validation | Validation passed: 54 days in daily_totals, 980 rows in forecast_results (140 forecast rows)
+[2026-08-27T03:00:06.732+0000] {logging_mixin.py:188} INFO - 2026-08-27 03:00:06,719 | INFO | validation | validation completed successfully for date=2026-08-26
+[2026-08-27T03:00:07.655+0000] {python.py:201} INFO - Done. Returned value was: None
+[2026-08-27T03:00:07.678+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=retailpulse_medallion_pipeline, task_id=validation, execution_date=20260826T000000, start_date=20260827T025928, end_date=20260827T030007
+[2026-08-27T03:00:07.765+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2026-08-27T03:00:07.795+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check
