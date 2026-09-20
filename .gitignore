@@ -1,0 +1,36 @@
+# CSV data files (raw datasets, intermediate files, and exports)
+*.csv
+
+# ECC folder
+ECC/
+ecc/
+[Ee][Cc][Cc]/
+
+# Interview guide markdown files
+DATA_SCIENTIST_INTERVIEW_GUIDE.md
+NON_TECH_DS_GUIDE.md
+*GUIDE.md
+*guide*.md
+
+# Python & Environment
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# Logs & Runtime
+logs/
+*.log
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+.agents/
+.antigravity/
+*.txt
+!requirements.txt
+logs/
+plugins/

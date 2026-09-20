@@ -1,0 +1,6 @@
+pyspark==3.5.1
+pyyaml
+kafka-python
+boto3
+pandas
+statsmodels
